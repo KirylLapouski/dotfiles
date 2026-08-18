@@ -1,0 +1,7 @@
+[user]
+	name = Kirill Lapkovskiy
+	email = lapkovskyk@mail.ru
+[core]
+	autocrlf = false
+[diff "excel"]
+	command = exceldiff.cmd
