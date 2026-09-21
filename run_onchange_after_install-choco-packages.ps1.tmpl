@@ -1,0 +1,37 @@
+{{ if eq .chezmoi.os "windows" -}}
+#Requires -Version 5.1
+$ErrorActionPreference = "Stop"
+
+function Test-IsAdmin {
+    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object Security.Principal.WindowsPrincipal($identity)
+    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+    if (-not (Test-IsAdmin)) {
+        throw "Chocolatey is not installed and this shell is not elevated. Re-run chezmoi apply from an elevated PowerShell."
+    }
+    Write-Host "Installing Chocolatey..."
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor 3072
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString("https://community.chocolatey.org/install.ps1"))
+    $env:Path = @(
+        [Environment]::GetEnvironmentVariable("Path", "Machine")
+        [Environment]::GetEnvironmentVariable("Path", "User")
+    ) -join ";"
+}
+
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+    throw "Chocolatey install finished but choco is not on PATH. Open a new elevated terminal and re-run chezmoi apply."
+}
+
+$source = "{{ .chezmoi.sourceDir }}"
+$packages = Join-Path $source "packages\choco.config"
+
+Write-Host "Installing Chocolatey packages..."
+& choco install $packages --yes
+if ($LASTEXITCODE -ne 0) {
+    throw "choco install failed with exit code $LASTEXITCODE"
+}
+{{ end -}}

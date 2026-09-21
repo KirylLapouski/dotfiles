@@ -1,0 +1,24 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/sh
+set -eu
+
+SRC="{{ .chezmoi.sourceDir }}"
+
+install_list() {
+    file="$1"
+    [ -f "$file" ] || return 0
+    if grep -qvE '^[[:space:]]*(#|$)' "$file"; then
+        echo "Installing packages from $file"
+        grep -vE '^[[:space:]]*(#|$)' "$file" | xargs -r sudo apt-get install -y
+    fi
+}
+
+sudo apt-get update
+install_list "$SRC/packages/apt-packages.txt"
+
+if ! grep -qi microsoft /proc/version 2>/dev/null; then
+    install_list "$SRC/packages/apt-gui-packages.txt"
+else
+    echo "WSL detected: skipping GUI packages"
+fi
+{{ end -}}

@@ -1,0 +1,25 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/sh
+set -eu
+
+if ! command -v code >/dev/null 2>&1; then
+    echo "VS Code 'code' CLI is not on PATH; skipping extension install."
+    exit 0
+fi
+
+LIST="{{ .chezmoi.sourceDir }}/packages/vscode-extensions.txt"
+[ -f "$LIST" ] || exit 0
+
+INSTALLED="$(mktemp)"
+trap 'rm -f "$INSTALLED"' EXIT
+code --list-extensions > "$INSTALLED" 2>/dev/null || true
+
+while IFS= read -r id; do
+    id="$(printf '%s' "$id" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+    case "$id" in ''|\#*) continue;; esac
+    if ! grep -qixF "$id" "$INSTALLED"; then
+        echo "Installing VS Code extension $id"
+        code --install-extension "$id" --force >/dev/null 2>&1 || true
+    fi
+done < "$LIST"
+{{ end -}}
