@@ -83,8 +83,9 @@ matters for native Linux VS Code.
 
 - **mise** (both OS): `node`, `python` 3.12 + 3.11, `java` temurin-21 + temurin-11,
   and the opencode `chrome-devtools-mcp` MCP server. On Linux only: `maven`, `rust`,
-  `kubectl`, `helm`, `pandoc` (on Windows these stay in Chocolatey).
-- **Chocolatey** (Windows): `packages/choco.config`. GUI/system apps only.
+  `kubectl`, `helm`, `pandoc`, `opencode` (on Windows these stay in Chocolatey).
+- **Chocolatey** (Windows): `packages/choco.config`. GUI/system apps, plus CLI tools
+  that are not worth managing through mise on Windows (e.g. `opencode`).
 - **apt** (Linux): `packages/apt-packages.txt`; `packages/apt-gui-packages.txt` is
   skipped in WSL.
 
