@@ -1,0 +1,19 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/sh
+set -eu
+
+if ! command -v mise >/dev/null 2>&1; then
+    echo "Installing mise..."
+    curl -fsSL https://mise.run | sh
+fi
+export PATH="$HOME/.local/bin:$PATH"
+
+echo "Installing mise tools..."
+mise install
+
+SHIM_DIR="$HOME/.local/share/mise/shims"
+if [ -f "$HOME/.bashrc" ] && ! grep -qF "$SHIM_DIR" "$HOME/.bashrc"; then
+    printf '\n# mise shims\nexport PATH="%s:$PATH"\n' "$SHIM_DIR" >> "$HOME/.bashrc"
+    echo "Added mise shims to ~/.bashrc (open a new shell to use them)"
+fi
+{{ end -}}

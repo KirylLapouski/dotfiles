@@ -1,0 +1,27 @@
+{{ if eq .chezmoi.os "windows" -}}
+#Requires -Version 5.1
+$ErrorActionPreference = "Stop"
+
+$code = Get-Command code -ErrorAction SilentlyContinue
+if (-not $code) {
+    Write-Host "VS Code 'code' CLI is not on PATH; skipping extension install."
+    exit 0
+}
+
+$list = "{{ .chezmoi.sourceDir }}/packages/vscode-extensions.txt"
+if (-not (Test-Path $list)) {
+    Write-Host "No vscode-extensions.txt found; skipping."
+    exit 0
+}
+
+$installed = & code --list-extensions
+$missing = Get-Content $list |
+    Where-Object { $_ -and ($_ -notmatch '^\s*#') } |
+    ForEach-Object { $_.Trim() } |
+    Where-Object { $installed -notcontains $_ }
+
+foreach ($id in $missing) {
+    Write-Host "Installing VS Code extension $id"
+    & code --install-extension $id --force | Out-Null
+}
+{{ end -}}

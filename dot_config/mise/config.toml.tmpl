@@ -1,0 +1,12 @@
+[tools]
+node = "lts"
+python = ["3.12", "3.11"]
+java = ["temurin-21", "temurin-11"]
+"npm:chrome-devtools-mcp" = "latest"
+{{- if eq .chezmoi.os "linux" }}
+maven = "latest"
+rust = "stable"
+kubectl = "latest"
+helm = "latest"
+pandoc = "latest"
+{{- end }}

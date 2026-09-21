@@ -1,0 +1,29 @@
+{{ if eq .chezmoi.os "windows" -}}
+#Requires -Version 5.1
+$ErrorActionPreference = "Stop"
+
+if (-not (Get-Command mise -ErrorAction SilentlyContinue)) {
+    throw "mise is not installed. Install it first (choco install mise), then re-run chezmoi apply."
+}
+
+Write-Host "Installing mise tools..."
+& mise install
+if ($LASTEXITCODE -ne 0) {
+    throw "mise install failed with exit code $LASTEXITCODE"
+}
+
+$shimDir = Join-Path $env:LOCALAPPDATA "mise\shims"
+$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+$parts = @()
+if ($userPath) {
+    $parts = $userPath -split ";" | Where-Object { $_ -ne "" }
+}
+$already = $parts | Where-Object { $_.TrimEnd("\") -ieq $shimDir.TrimEnd("\") }
+if (-not $already) {
+    $newPath = if ($userPath) { "$userPath;$shimDir" } else { $shimDir }
+    [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
+    Write-Host "Added to User PATH: $shimDir"
+} else {
+    Write-Host "PATH already contains $shimDir"
+}
+{{ end -}}
