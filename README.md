@@ -16,13 +16,24 @@ winget install twpayne.chezmoi
 chezmoi init --apply KirylLapouski/.dotfiles
 ```
 
-Ubuntu/Debian, including WSL2:
+Ubuntu/Debian, including WSL2 (the repo is private, so authenticate first):
 
 ```bash
+sudo apt-get update && sudo apt-get install -y gh git curl
+gh auth login            # GitHub.com -> HTTPS -> login with browser/device code
+gh auth setup-git        # writes a credential helper into ~/.gitconfig
+
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply KirylLapouski/.dotfiles
 ```
 
-Open a new shell afterwards so `PATH` picks up Chocolatey/mise shims.
+No Windows dependency: `gh auth setup-git` makes git use the token stored by `gh`,
+so this works on native Linux and inside WSL. SSH alternative: add an SSH key to
+GitHub and run
+`chezmoi init --apply git@github.com:KirylLapouski/.dotfiles.git`.
+
+Open a new shell afterwards so `PATH` picks up Chocolatey/mise shims. The first full
+`chezmoi apply` installs apt packages and mise tools, so run `sudo -v` first or enter
+your password when prompted.
 
 ## What gets managed
 
