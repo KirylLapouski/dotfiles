@@ -1,5 +1,6 @@
 {{ if eq .chezmoi.os "linux" -}}
 #!/bin/sh
+# mise/config.toml sha256: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
 set -eu
 
 if ! command -v mise >/dev/null 2>&1; then

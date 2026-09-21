@@ -1,5 +1,6 @@
 {{ if eq .chezmoi.os "windows" -}}
 #Requires -Version 5.1
+# vscode-extensions.txt sha256: {{ include "packages/vscode-extensions.txt" | sha256sum }}
 $ErrorActionPreference = "Stop"
 
 $code = Get-Command code -ErrorAction SilentlyContinue

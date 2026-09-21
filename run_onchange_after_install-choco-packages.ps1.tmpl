@@ -1,5 +1,6 @@
 {{ if eq .chezmoi.os "windows" -}}
 #Requires -Version 5.1
+# choco.config sha256: {{ include "packages/choco.config" | sha256sum }}
 $ErrorActionPreference = "Stop"
 
 function Test-IsAdmin {

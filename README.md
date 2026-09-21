@@ -91,6 +91,17 @@ matters for native Linux VS Code.
 Run scripts only re-execute when their generated content changes, so adding a package
 to a list and running `chezmoi apply` installs it.
 
+### Changing package lists
+
+1. Edit the list in the source: `packages/apt-packages.txt`, `packages/choco.config`,
+   `packages/vscode-extensions.txt`, or `dot_config/mise/config.toml.tmpl`.
+2. Run `chezmoi apply` — each install script embeds a SHA-256 of its list, so editing
+   the list changes the script and it re-runs automatically.
+3. Commit and push; other machines pick it up with `chezmoi update`.
+
+Removing an entry does **not** uninstall it — the scripts only install. Uninstall
+manually if needed: `sudo apt-get remove --autoremove <pkg>` or `choco uninstall <pkg>`.
+
 ## Machine-specific overrides
 
 `~/.gitconfig.local` is included by the managed `.gitconfig` but never tracked. For

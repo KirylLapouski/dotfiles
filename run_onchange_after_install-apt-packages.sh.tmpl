@@ -1,5 +1,7 @@
 {{ if eq .chezmoi.os "linux" -}}
 #!/bin/sh
+# apt-packages.txt sha256: {{ include "packages/apt-packages.txt" | sha256sum }}
+# apt-gui-packages.txt sha256: {{ include "packages/apt-gui-packages.txt" | sha256sum }}
 set -eu
 
 SRC="{{ .chezmoi.sourceDir }}"

@@ -1,5 +1,6 @@
 {{ if eq .chezmoi.os "linux" -}}
 #!/bin/sh
+# vscode-extensions.txt sha256: {{ include "packages/vscode-extensions.txt" | sha256sum }}
 set -eu
 
 if ! command -v code >/dev/null 2>&1; then

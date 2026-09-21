@@ -1,5 +1,6 @@
 {{ if eq .chezmoi.os "windows" -}}
 #Requires -Version 5.1
+# mise/config.toml sha256: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
 $ErrorActionPreference = "Stop"
 
 if (-not (Get-Command mise -ErrorAction SilentlyContinue)) {

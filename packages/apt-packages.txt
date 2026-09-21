@@ -19,4 +19,3 @@ pkg-config
 libssl-dev
 python3-venv
 openvpn
-anki
