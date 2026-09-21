@@ -21,13 +21,18 @@ Ubuntu/Debian, including WSL2 (the repo is private, so authenticate first):
 ```bash
 sudo apt-get update && sudo apt-get install -y gh git curl
 gh auth login            # GitHub.com -> HTTPS -> login with browser/device code
-gh auth setup-git        # writes a credential helper into ~/.gitconfig
+gh auth setup-git        # credential helper for the initial chezmoi clone
+
+git config --file ~/.gitconfig.local credential.https://github.com.helper '!gh auth git-credential'
 
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply KirylLapouski/.dotfiles
 ```
 
-No Windows dependency: `gh auth setup-git` makes git use the token stored by `gh`,
-so this works on native Linux and inside WSL. SSH alternative: add an SSH key to
+No Windows dependency: the `gh` credential helper makes git use the token stored by
+`gh`, so this works on native Linux and inside WSL. The helper is written to
+`~/.gitconfig.local` because the first `chezmoi apply` replaces `~/.gitconfig` with
+the managed version, which drops helpers added by `gh auth setup-git` and leaves git
+prompting for a password (GitHub rejects those). SSH alternative: add an SSH key to
 GitHub and run
 `chezmoi init --apply git@github.com:KirylLapouski/.dotfiles.git`.
 
