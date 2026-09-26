@@ -23,8 +23,6 @@ sudo apt-get update && sudo apt-get install -y gh git curl
 gh auth login            # GitHub.com -> HTTPS -> login with browser/device code
 gh auth setup-git        # credential helper for the initial chezmoi clone
 
-git config --file ~/.gitconfig.local credential.https://github.com.helper '!gh auth git-credential'
-
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply KirylLapouski/.dotfiles
 ```
 
